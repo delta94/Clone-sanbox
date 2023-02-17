@@ -1,0 +1,113 @@
+(e,t,n)=>{
+        "use strict";
+        n.d(t, {
+            Cq: ()=>f,
+            ur: ()=>E,
+            nf: ()=>g
+        });
+        var r = n("oTKh") //long code
+          , l = n("memoize") // memoize
+          , i = n.n(l)
+          , a = n("D57K")
+          , o = function(e) {
+            return function(t) {
+                return t[e]
+            }
+        }
+          , c = function(e) {
+            for (var t = [], n = 1; n < arguments.length; n++)
+                t[n - 1] = arguments[n];
+            return function() {
+                for (var n = [], r = 0; r < arguments.length; r++)
+                    n[r] = arguments[r];
+                var l = (0,
+                a.__spreadArray)((0,
+                a.__spreadArray)([], t), n);
+                return l.length >= e.length ? e.apply(this, l) : c.apply(void 0, (0,
+                a.__spreadArray)([e], l))
+            }
+        }
+          , s = function() {
+            for (var e = [], t = 0; t < arguments.length; t++)
+                e[t] = arguments[t];
+            return 0 === e.length ? function() {}
+            : 1 === e.length ? e[0] : c(e.reduce((function(e, t) {
+                return function() {
+                    for (var n = [], r = 0; r < arguments.length; r++)
+                        n[r] = arguments[r];
+                    return e(t.apply(void 0, n))
+                }
+            }
+            )))
+        }
+          , u = n("isBrowser")
+          , d = {
+            cn: "zh-cn",
+            tw: "zh-tw",
+            kr: "ko-kr",
+            ru: "ru-ru",
+            vn: "vi-vn",
+            it: "it-it",
+            es: "es-es",
+            de: "de-de",
+            fr: "fr-fr",
+            jp: "ja-jp"
+        }
+          , p = "([a-zA-Z]+)(-([a-zA-Z]+))?"
+          , m = function() {
+            var e;
+            if (u.C) {
+                var t = null === (e = window.location.pathname) || void 0 === e ? void 0 : e.match(new RegExp("^/(" + p + ")($|/)"));
+                return t ? t[1] : (console.log("Can't get path from window.location, regexp: " + p),
+                "")
+            }
+            return r.Z.language
+        }
+          , h = i()((function(e) {
+            var t, n, r = "en", l = "";
+            if ("string" !== typeof e)
+                return console.log("The type of path should be string, current is: ", typeof e),
+                {
+                    lang: r,
+                    region: l,
+                    path: e
+                };
+            var i = e.match(new RegExp("^" + p + "$"));
+            return i ? {
+                lang: r = void 0 === (t = i[1]) ? "" : t,
+                region: l = void 0 === (n = i[3]) ? "" : n,
+                path: e
+            } : (console.log("Invalid path: " + e + "."),
+            {
+                lang: r,
+                region: l,
+                path: e
+            })
+        }
+        ))
+          , f = s((function(e) {
+            return "string" === typeof e ? e.toLowerCase() : e
+        }
+        ), (function(e) {
+            return d[e] || e
+        }
+        ))
+          , v = s(o("lang"), h, f)
+          , g = s(o("region"), h, f)
+          , E = (s(v, m),
+        s(g, m))
+    }
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+

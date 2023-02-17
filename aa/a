@@ -1,0 +1,136 @@
+function(e, t, n) {
+        n.d(t, {
+            Z: function() {
+                return E
+            }
+        });
+        var i = n(19623)
+          , r = n(90149)
+          , o = n.n(r)
+          , s = n(67294)
+          , l = n(25047)
+          , a = n(94184)
+          , u = n.n(a)
+          , c = n(89138)
+          , f = n(52891)
+          , d = function(e) {
+            return e && e.Math == Math && e
+        }
+          , h = d("object" == (void 0 === o() ? "undefined" : (0,
+        i.Z)(o())) && o()) || d("object" == ("undefined" == typeof window ? "undefined" : (0,
+        i.Z)(window)) && window) || d("object" == ("undefined" == typeof self ? "undefined" : (0,
+        i.Z)(self)) && self) || d("object" == (void 0 === n.g ? "undefined" : (0,
+        i.Z)(n.g)) && n.g) || function() {
+            return this
+        }() || Function("return this")();
+        h.globalThis = h,
+        h.globalThis.getFilterXss = function() {
+            return void 0 === this.xss ? (console.warn("@ies/babel-plugin-filter-xss: @ies/filter-xss is not defined"),
+            {
+                filterUrl: function(e) {
+                    return e
+                },
+                _filterXSS: function(e) {
+                    return e
+                }
+            }) : void 0 !== this._xssProjectName ? this._xssProject[this._xssProjectName] : this.xss
+        }
+        ;
+        var p = (0,
+        s.createContext)({
+            id: 0,
+            name: ""
+        })
+          , v = p.Provider
+          , m = (p.Consumer,
+        n(68956))
+          , g = n(97829)
+          , b = n(68898)
+          , y = n(16444)
+          , _ = function(e) {
+            return e && e.Math == Math && e
+        }
+          , w = _("object" == (void 0 === o() ? "undefined" : (0,
+        i.Z)(o())) && o()) || _("object" == ("undefined" == typeof window ? "undefined" : (0,
+        i.Z)(window)) && window) || _("object" == ("undefined" == typeof self ? "undefined" : (0,
+        i.Z)(self)) && self) || _("object" == (void 0 === n.g ? "undefined" : (0,
+        i.Z)(n.g)) && n.g) || function() {
+            return this
+        }() || Function("return this")();
+        w.globalThis = w,
+        w.globalThis.getFilterXss = function() {
+            return void 0 === this.xss ? (console.warn("@ies/babel-plugin-filter-xss: @ies/filter-xss is not defined"),
+            {
+                filterUrl: function(e) {
+                    return e
+                },
+                _filterXSS: function(e) {
+                    return e
+                }
+            }) : void 0 !== this._xssProjectName ? this._xssProject[this._xssProjectName] : this.xss
+        }
+        ;
+        var x = "categoryContent"
+          , E = function(e) {
+            var t = e.className
+              , n = e.showFooter
+              , i = e.catergoryId
+              , r = e.catergoryName
+              , o = e.sideStatus
+              , a = e.isGray;
+            (0,
+            l.Z)({
+                defaultConfig: {
+                    side: o || "dynamic",
+                    className: "categoryPage__layout"
+                }
+            });
+            var d = (0,
+            g.Z)();
+            return (0,
+            s.useEffect)((function() {
+                var e = Date.now();
+                return b.Z.page_sub_channel(r),
+                function() {
+                    r && m.Z.category.stayCategory({
+                        stay_time: (Date.now() - e) / 1e3,
+                        category_name: r,
+                        from_url: d,
+                        rank: (0,
+                        y.mH)(r)
+                    })
+                }
+            }
+            ), [d, r]),
+            s.createElement(v, {
+                value: {
+                    id: i,
+                    name: r
+                }
+            }, s.createElement("div", {
+                className: "".concat(x, "__wrapper")
+            }, s.createElement(c.Z, {
+                className: u()(x, t),
+                lv: a ? 1 : -1
+            }, e.children, n && s.createElement(f.Z, null))))
+        }
+    } 
+
+
+
+
+
+import filterXss from '@ies/filter-xss';
+
+const getFilterXss = () => {
+    if (!globalThis.xss) {
+        console.warn('@ies/babel-plugin-filter-xss: @ies/filter-xss is not defined');
+        return {
+            filterUrl: (url) => url,
+            _filterXSS: (str) => str,
+        };
+    }
+    return globalThis._xssProjectName ? globalThis._xssProject[globalThis._xssProjectName] : globalThis.xss;
+};
+
+globalThis.getFilterXss = getFilterXss;

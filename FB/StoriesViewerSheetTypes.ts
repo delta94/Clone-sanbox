@@ -1,0 +1,7 @@
+const StoriesViewerSheetTypes = {
+    NO_VIEWERSHEET: "NO_VIEWERSHEET",
+    PAGE_STORY_VIEWERSHEET: "PAGE_STORY_VIEWERSHEET",
+    SELF_STORY_VIEWERSHEET: "SELF_STORY_VIEWERSHEET",
+};
+
+export default StoriesViewerSheetTypes;
