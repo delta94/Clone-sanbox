@@ -24,12 +24,12 @@ const Placeholder = (props, ref) => {
       hidden,
       ignoreLateMutation,
       name,
-      pageletAriaProps,
+      pageletAriaProps = 2,
       position,
     } = props;
   
     let pageletName = name;
-    if (position != null && position < 2) {
+    if (position != null && position < pageletAriaProps) {
       pageletName += `_${position}`;
     } else if (position != null) {
       pageletName += `_{n}`;

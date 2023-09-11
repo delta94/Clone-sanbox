@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 import CometRelay from 'CometRelay';
 import WorkGalahadAppTabTopApps from 'WorkGalahadAppTabTopApps.react';
-import WorkNavigationClassicRenderer_renderer from 'WorkNavigationClassicRenderer_renderer.graphql';
+import WorkNavigationClassicRendererRenderer from 'WorkNavigationClassicRenderer_renderer.graphql';
 import WorkNavigationCollapseButtonAndNubs from 'WorkNavigationCollapseButtonAndNubs.react';
 import WorkNavigationList from 'WorkNavigationList.react';
 
 let h;
 
 const WorkNavigationClassicRenderer = ({ renderer }) => {
-CometRelay.useFragment(h || (h = WorkNavigationClassicRenderer_renderer), renderer);
+CometRelay.useFragment(WorkNavigationClassicRendererRenderer, renderer);
 
 return (
 <WorkNavigationList>

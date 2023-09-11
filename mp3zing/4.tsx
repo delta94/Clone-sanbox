@@ -67,3 +67,13 @@
         }))))
     }))
 },
+
+
+
+
+
+const A  = (props) => {
+    const {images, isPlay = false, timeout = 10, shuffle = false, once = false, className  } = props;
+
+    const { state, setState } = useState(2) 
+}
