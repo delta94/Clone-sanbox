@@ -263,19 +263,20 @@ __d("FocusRegion.react", ["ActiveFocusRegionUtilsContext", "FocusManager", "Focu
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { unstable_Scope as Scope } from 'react';
 import { FocusManager, FocusRegionType } from './FocusManager';
-import { ReactEventHookPropagation } from './ReactEventHookPropagation';
+import { ReactEventHookPropagation } from 'ReactEventHookPropagation';
 import { ReactFocusEvent } from './ReactFocusEvent';
 import { ReactKeyboardEvent } from './ReactKeyboardEvent';
 import { setElementCanTab } from './setElementCanTab';
 import { useUnsafeRef_DEPRECATED } from './useUnsafeRef_DEPRECATED';
+import { ActiveFocusRegionUtilsContext } from 'ActiveFocusRegionUtilsContext';
 
 function focusElementWithDelay(element, preventScroll, focusWithoutUserIntent) {
   const previousActiveElement = document.activeElement;
   window.requestAnimationFrame(() => {
     if (document.activeElement === previousActiveElement) {
       FocusManager.focusElement(element, {
-        preventScroll: preventScroll,
-        focusWithoutUserIntent: focusWithoutUserIntent,
+        preventScroll,
+        focusWithoutUserIntent,
       });
     }
   });
@@ -356,31 +357,6 @@ function FocusRegion({
     }
   }, [activeFocusRegionUtils, activeFocusRegionData]);
 
-  const scopeCallback = useCallback(
-    (scope) => {
-      scopeRef.current = scope;
-      const previousActiveFocusRegionId = triggerRef.current;
-      if (forwardRef) {
-        forwardRef.current = scope;
-      }
-      if (
-        previousActiveFocusRegionId !== null &&
-        previousActiveFocusRegionId !== id &&
-        activeFocusRegions.get(previousActiveFocusRegionId) === null
-      ) {
-        activeFocusRegions.delete(previousActiveFocusRegionId);
-      }
-      if (id != null) {
-        if (scope !== null) {
-          triggerRef.current = id;
-          activeFocusRegions.set(id, scope);
-        } else if (activeFocusRegions.get(id) === null) {
-          activeFocusRegions.delete(id);
-        }
-      }
-    },
-    [forwardRef, id, activeFocusRegionData]
-  );
 
   const scopeRefCallback = useCallback(
     (ref) => {
@@ -410,86 +386,87 @@ function FocusRegion({
     [forwardRef, id, activeFocusRegionData]
   );
 
-  const handleBeforeBlurWithin = useCallback(
-    (event) => {
-      const scope = scopeRef.current;
-      if (scope !== null && recoverFocusQuery !== undefined) {
-        event.stopPropagation();
-        if (recoverFocusQuery === null) {
-          return;
-        }
-        const target = event.target;
-        const recoverNodes = FocusManager.getAllNodesFromOneOrManyQueries(recoverFocusQuery, scope);
-        if (recoverNodes === null) {
-          return;
-        }
-        const recoverIndex = recoverNodes.indexOf(target);
-        const tabIndexState = target._tabIndexState;
-        activeFocusRegionData.recoverData = {
-          detachedCanTab: tabIndexState != null && tabIndexState.canTab,
-          recoverIndex: recoverIndex,
-          recoverNodes: recoverNodes,
-        };
-      }
-    },
-    [recoverFocusQuery, activeFocusRegionData]
-  );
+  const focusWithinHandlers = ReactFocusEvent.useFocusWithin(scopeRefCallback,useMemo(() => {
+    return {
+      onBeforeBlurWithin: function (event) {
+        const scope = scopeRef.current;
+        if (scope !== null && recoverFocusQuery !== void 0) {
+          event.stopPropagation();
+          if (recoverFocusQuery === null) {
+            return;
+          }
+          const target = event.target;
+          const queryScope = FocusManager.getAllNodesFromOneOrManyQueries(recoverFocusQuery, scope);
+         
+          if (queryScope === null) {
+            return;
+          }
 
-  const handleAfterBlurWithin = useCallback(() => {
-    const scope = scopeRef.current;
-    const recoverData = activeFocusRegionData.recoverData;
-    activeFocusRegionData.recoverData = null;
-    const activeElement = document.activeElement;
-    if (scope !== null && recoverFocusQuery != null && recoverData !== null && (activeElement == null || activeElement === document.body || !scope.containsNode(activeElement))) {
-      const preventScroll = true;
-      const focusWithoutUserIntent = true;
-      const recoverNodes = recoverData.recoverNodes;
-      const recoverIndex = recoverData.recoverIndex;
-      const focusableNodes = FocusManager.getAllNodesFromOneOrManyQueries(recoverFocusQuery, scope);
-      if (focusableNodes !== null && recoverNodes !== null) {
-        const focusableSet = new Set(focusableNodes);
-        const recoverSet = new Set(recoverNodes);
-        for (let i = recoverIndex - 1; i >= 0; i--) {
-          const recoverNode = recoverNodes[i];
-          if (focusableSet.has(recoverNode)) {
-            const nextFocusNode = focusableNodes[focusableNodes.indexOf(recoverNode) + 1];
-            if (!recoverSet.has(nextFocusNode)) {
-              recoverData.detachedCanTab && setElementCanTab(nextFocusNode, true);
-              focusElementWithDelay(nextFocusNode, preventScroll, focusWithoutUserIntent);
-              return;
+          const recoveryIndex = queryScope.indexOf(target);
+          const tabIndexState = target._tabIndexState;
+          scopeRef.current = {
+            detachedCanTab: tabIndexState !== null && tabIndexState.canTab,
+            recoveryIndex,
+            recovery: queryScope,
+          };
+        }
+      },
+      onAfterBlurWithin: function () {
+        const currentScope = scopeRef.current;
+        const recoveryData = triggerRef.current;
+        triggerRef.current = null;
+        const activeElement = document.activeElement;
+
+        if (currentScope !== null && autoFocusQuery != null && recoveryData !== null && (activeElement == null || activeElement === document.body || !currentScope.containsNode(activeElement))) {
+          const preventScroll = true;
+          const focusWithoutUserIntent = true;
+          const {recovery,recoveryIndex} = recoveryData;
+          const focusableNodes = FocusManager.getAllNodesFromOneOrManyQueries(recoverFocusQuery, currentScope);
+          if (focusableNodes !== null && recovery !== null) {
+            const focusableSet = new Set(focusableNodes);
+            const recoverSet = new Set(recovery);
+            for (let i = recoveryIndex - 1; i >= 0; i--) {
+              const recoverNode = recovery[i];
+              if (focusableSet.has(recoverNode)) {
+                const nextIndex = focusableNodes.indexOf(recoverNode) + 1;
+
+                if(nextIndex < focusableNodes.length) {
+                  const nextNode = focusableNodes[nextIndex];
+
+                  if (!recoverSet.has(nextNode)) {
+                    recoveryData.detachedCanTab && setElementCanTab(nextNode, true);
+                    focusElementWithDelay(nextNode, preventScroll, focusWithoutUserIntent);
+                    return;
+                  }
+                }
+              }
+            }
+            if (recoverFocusStrategy === FocusRegionType.RecoverFocusStrategy.Nearest) {
+              for (let i = recoveryIndex + 1; i < recovery.length; i++) {
+                const recoverNode = recovery[i];
+                if (focusableSet.has(recoverNode)) {
+                  const previousFocusNode = focusableNodes[focusableNodes.indexOf(recoverNode) - 1];
+                  recoveryData.detachedCanTab && setElementCanTab(previousFocusNode, true);
+                  focusElementWithDelay(previousFocusNode, preventScroll, focusWithoutUserIntent);
+                  return;
+                }
+              }
+            }
+            const firstFocusNode = FocusManager.getFirstNodeFromOneOrManyQueries(recoverFocusQuery, currentScope);
+            if (firstFocusNode) {
+              recoveryData.detachedCanTab && setElementCanTab(firstFocusNode, true);
+              focusElementWithDelay(firstFocusNode, preventScroll, focusWithoutUserIntent);
             }
           }
         }
-        if (recoverFocusStrategy === FocusRegionType.RecoverFocusStrategy.Nearest) {
-          for (let i = recoverIndex + 1; i < recoverNodes.length; i++) {
-            const recoverNode = recoverNodes[i];
-            if (focusableSet.has(recoverNode)) {
-              const previousFocusNode = focusableNodes[focusableNodes.indexOf(recoverNode) - 1];
-              recoverData.detachedCanTab && setElementCanTab(previousFocusNode, true);
-              focusElementWithDelay(previousFocusNode, preventScroll, focusWithoutUserIntent);
-              return;
-            }
-          }
-        }
-        const firstFocusNode = FocusManager.getFirstNodeFromOneOrManyQueries(recoverFocusQuery, scope);
-        if (firstFocusNode) {
-          recoverData.detachedCanTab && setElementCanTab(firstFocusNode, true);
-          focusElementWithDelay(firstFocusNode, preventScroll, focusWithoutUserIntent);
-        }
+      },
+      onFocusWithin: function (event) {
+        stopOnFocusWithinPropagation && ReactEventHookPropagation.stopEventHookPropagation(event, "useFocusWithin");
+        activeFocusRegionData.lastFocused = event.target;
+        updateActiveFocusRegion();
       }
     }
-  }, [recoverFocusQuery, recoverFocusStrategy, activeFocusRegionData]);
-
-  const handleFocusWithin = useCallback(
-    (event) => {
-      if (stopOnFocusWithinPropagation) {
-        ReactEventHookPropagation.stopEventHookPropagation(event, 'useFocusWithin');
-      }
-      activeFocusRegionData.lastFocused = event.target;
-      updateActiveFocusRegion();
-    },
-    [stopOnFocusWithinPropagation, activeFocusRegionData, updateActiveFocusRegion]
-  );
+  }), [recoverFocusQuery, recoverFocusStrategy, stopOnFocusWithinPropagation, activeFocusRegionData, updateActiveFocusRegion])
 
   const autoRestoreFocusCallback = useCallback(() => {
     const scope = scopeRef.current;
@@ -515,6 +492,72 @@ function FocusRegion({
   useLayoutEffect(autoRestoreFocusCallback, [autoRestoreFocusCallback]);
   useEffect(autoRestoreFocusCallback, [autoRestoreFocusCallback]);
 
+  const handleBlur = useCallback(
+    (previousActiveFocusRegion, shouldPreventScroll = false) => {
+      const currentScope = scopeRef.current;
+      const currentActiveElement = document.activeElement;
+      const previousActiveScope = activeFocusRegionRef.current;
+      activeFocusRegionRef.current = null;
+  
+      const triggeredFocusRegionItems = previousActiveFocusRegion?.triggeredFocusRegionItems;
+      const restorationFocusRegionItem = previousActiveFocusRegion?.restorationFocusRegionItem;
+  
+      triggeredFocusRegionItems?.forEach((item) => {
+        item.restorationFocusRegionItem = restorationFocusRegionItem;
+      });
+  
+      if (previousActiveFocusRegion != null && restorationFocusRegionItem != null) {
+        restorationFocusRegionItem.triggeredFocusRegionItems.delete(previousActiveFocusRegion);
+        triggeredFocusRegionItems?.forEach((item) => {
+          restorationFocusRegionItem.triggeredFocusRegionItems.add(item);
+        });
+      }
+  
+      activeFocusRegionData.lastFocused = null;
+      
+      const currentActiveFocusRegion = activeFocusRegionUtils?.getActiveFocusRegion();
+      const lastFocused = currentActiveFocusRegion != null ? currentActiveFocusRegion.restorationFocusRegionItem : { lastFocused: previousActiveScope.current };
+  
+      if (currentActiveFocusRegion === previousActiveFocusRegion) {
+        activeFocusRegionUtils?.setActiveFocusRegion(restorationFocusRegionItem);
+      }
+  
+      const isFocusWithinScope =
+        currentScope !== null && currentActiveElement !== null && currentScope.containsNode(currentActiveElement);
+  
+      if ((autoRestoreFocus === true || onEscapeFocusRegion != null) && isFocusWithinScope) {
+        const focusAfterBlur = (shouldPreventScroll = false) => {
+          if (lastFocused?.lastFocused != null) {
+            const preventScroll = true;
+            const focusWithoutUserIntent = true;
+            const currentActiveElement = document.activeElement;
+            if (shouldPreventScroll || currentActiveElement === null || currentActiveElement === document.body) {
+              FocusManager.focusElement(lastFocused.lastFocused, {
+                preventScroll,
+                focusWithoutUserIntent,
+              });
+            }
+          }
+        };
+  
+        if (shouldPreventScroll) {
+          focusAfterBlur(shouldPreventScroll);
+        } else {
+          window.requestAnimationFrame(() => {
+            focusAfterBlur();
+          });
+        }
+      }
+    },
+    [activeFocusRegionUtils, autoRestoreFocus, onEscapeFocusRegion]
+  );
+  
+  const handleEscapeFocusRegion = useCallback(() => {
+    handleBlur(activeFocusRegionRef, true);
+    onEscapeFocusRegion && onEscapeFocusRegion();
+  }, [handleBlur, onEscapeFocusRegion, activeFocusRegionRef]);
+  
+
   const handleKeyDown = useCallback(
     (event) => {
       if (containFocusQuery === null || event.key !== 'Tab' || event.isDefaultPrevented()) {
@@ -532,54 +575,19 @@ function FocusRegion({
     [containFocusQuery, onEscapeFocusRegion, handleEscapeFocusRegion]
   );
 
-  useKeyboard(scopeRef, () => ({
+  ReactKeyboardEvent.useKeyboard(scopeRef, () => ({
     onKeyDown: handleKeyDown,
   }));
 
   useLayoutEffect(() => {
-    activeFocusRegionData.lastFocused = activeFocusRegionRef.current;
-    const previousActiveFocusRegion = activeFocusRegionUtils?.getActiveFocusRegion();
-    const isRestoring = previousActiveFocusRegion != null ? previousActiveFocusRegion.restorationFocusRegionItem : { lastFocused: activeFocusRegionRef.current };
-    if (previousActiveFocusRegion === activeFocusRegionData) {
-      activeFocusRegionUtils?.setActiveFocusRegion(isRestoring);
-    }
-    const previousActiveFocusRegionId = triggerRef.current;
-    triggerRef.current = id;
-    if (
-      previousActiveFocusRegionId !== null &&
-      previousActiveFocusRegionId !== id &&
-      activeFocusRegions.get(previousActiveFocusRegionId) === null
-    ) {
-      activeFocusRegions.delete(previousActiveFocusRegionId);
-    }
-    if (id != null) {
-      if (scopeRef.current !== null) {
-        triggerRef.current = id;
-        activeFocusRegions.set(id, scopeRef.current);
-      } else if (activeFocusRegions.get(id) === null) {
-        activeFocusRegions.delete(id);
-      }
-    }
-    return () => {
-      triggerRef.current = null;
-      const previousActiveFocusRegion = activeFocusRegionUtils?.getActiveFocusRegion();
-      const isRestoring = previousActiveFocusRegion != null ? previousActiveFocusRegion.restorationFocusRegionItem : { lastFocused: activeFocusRegionRef.current };
-      activeFocusRegionData.lastFocused = null;
-      const previousActiveFocusRegionId = triggerRef.current;
-      if (previousActiveFocusRegionId !== null && previousActiveFocusRegionId !== id && activeFocusRegions.get(previousActiveFocusRegionId) === null) {
-        activeFocusRegions.delete(previousActiveFocusRegionId);
-      }
-      if (id != null) {
-        if (previousActiveFocusRegion === activeFocusRegionData && activeFocusRegions.get(id) === null) {
-          activeFocusRegions.delete(id);
-        }
-      }
-      onEscapeFocusRegion(isRestoring, true);
-    };
-  }, [activeFocusRegionUtils, autoRestoreFocus, id, onEscapeFocusRegion, activeFocusRegionData]);
+    activeFocusRegionRef.current = activeFocusRegionRef.current ? activeFocusRegionRef.current : activeFocusRegion;
+    const currentFocusRegion = activeFocusRegionData;
+  
+    return handleBlur(currentFocusRegion);
+  }, [activeFocusRegionUtils, autoRestoreFocus, handleBlur, activeFocusRegionData, activeFocusRegion]);
 
   return (
-    <Scope ref={scopeRefCallback} id={id}>
+    <Scope ref={focusWithinHandlers} id={id}>
       {children}
     </Scope>
   );

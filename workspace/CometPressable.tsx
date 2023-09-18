@@ -98,7 +98,7 @@ const CometPressable = React.forwardRef((props, ref) => {
 
     } = props
 
-    const [pressed, setPressed] = useState(testOnly_pressed || false);
+    const [pressed, setPressed] = useState(testOnly_pressed);
     const [focused, setFocused] = useState(false);
     const [focusVisible, setFocusVisible] = useState(false);
     const [hovered, setHovered] = useState(false);
