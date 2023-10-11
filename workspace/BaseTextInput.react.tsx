@@ -2,8 +2,8 @@
 
 
 import React, { forwardRef } from 'react';
-import BaseFocusRing from 'BaseFocusRing.react';
-import BaseInput from 'BaseInput.react';
+import BaseFocusRing from './BaseFocusRing.react';
+import BaseInput from './BaseInput.react';
 import stylex from "stylex";
 
 const styles = {
@@ -26,3 +26,7 @@ const BaseTextInput = forwardRef((props, ref) => {
 });
     
  export default React.memo(BaseTextInput);
+
+
+
+ 
