@@ -1,0 +1,279 @@
+BELX: (e,t,n)=>{
+        "use strict";
+        n.d(t, {
+            Z: ()=>y
+        });
+        var i = n("BK7R")
+          , o = n("QUKP")
+          , r = n("jg1C")
+          , s = n("DTvD")
+          , a = n("C6y2")
+          , l = n("S9o+") // i18nexr
+          , c = n("Jd/b")
+          , u = n("qK/R")
+          , d = n("vWiH")
+          , h = n("wRFv")
+          , p = n("sHGS")
+          , f = n("BCcu")
+          , x = n("nn0X")
+          , v = n("6+bd")
+          , g = n("c+4a")
+          , m = {
+            width: "50%",
+            alignItems: "center",
+            color: "t.third",
+            fontWeight: 500,
+            fontSize: ["20px"],
+            borderBottom: "4px solid #FAFAFA",
+            justifyContent: "center",
+            cursor: "pointer",
+            height: "52px"
+        }
+          , b = (0,
+        o.Z)((0,
+        i.Z)({}, m), {
+            borderBottom: "4px solid #F0B90B",
+            color: "t.primary"
+        });
+        const y = function() {
+            var e, t, n = (0,
+            l.$)().t, y = (0,
+            v.B4)(), _ = y.type, w = y.paymentmethod, C = y.channel, Z = (0,
+            u.Z)(), j = (0,
+            x.Fg)().isLight, S = (0,
+            c.Z)(), $ = (0,
+            g.Z)().complianceKeys, k = (0,
+            f.Z)(), M = k.selectFiat, D = k.selectCrypto, F = k.fiatList, z = k.cryptoList, B = (null === D || void 0 === D ? void 0 : D.assetCode) || (null === (e = z[0]) || void 0 === e ? void 0 : e.assetCode) || "BTC", L = (null === M || void 0 === M ? void 0 : M.assetCode) || (null === (t = F[0]) || void 0 === t ? void 0 : t.assetCode) || "EUR", I = (0,
+            s.useCallback)((function() {
+                return S.toChannelPage({
+                    crypto: B,
+                    fiat: L,
+                    channel: C,
+                    paymentmethod: w,
+                    type: h.xy.SELL
+                })
+            }
+            ), [C, B, L, w, S]), H = (0,
+            s.useCallback)((function() {
+                S.toChannelPage({
+                    crypto: B,
+                    fiat: L,
+                    channel: C,
+                    paymentmethod: w,
+                    type: h.xy.BUY
+                })
+            }
+            ), [C, B, L, w, S]), O = (0,
+            s.useCallback)((function(e) {
+                var t, n, i, o, r = "", s = (0,
+                p.K)(_, "sell"), a = s ? "binance_fiat_sell_crypto_page" : "binance_fiat_buy_crypto_page";
+                w || (r = s ? "binance_click_fiat_multiple_sell_enter_amount_page_switch_to_buy" : "binance_click_fiat_multiple_buy_enter_amount_page_switch_to_sell"),
+                w === h.pD.Card && (r = s ? "binance_click_fiat_multiple_sell_enter_amount_page_switch_to_buy" : "binance_click_fiat_buy_with_card_enter_amount_page_switch_to_sell"),
+                w === h.pD.Wallet && (r = s ? "binance_click_fiat_multiple_sell_enter_amount_page_switch_to_buy" : "binance_click_fiat_buy_with_wallet_enter_amount_page_switch_to_sell"),
+                (0,
+                d.e1)(d.Ql.webClick, {
+                    pageName: a,
+                    elementID: r,
+                    extraInfo: {
+                        language: Z
+                    }
+                }),
+                "buy" === (null === e || void 0 === e || null === (t = e.target) || void 0 === t || null === (n = t.dataset) || void 0 === n ? void 0 : n.type) && H(),
+                "sell" === (null === e || void 0 === e || null === (i = e.target) || void 0 === i || null === (o = i.dataset) || void 0 === o ? void 0 : o.type) && I()
+            }
+            ), [_, Z, H, I, w]), R = $.includes(h.rY.BUY) || $.includes(h.rY.SELL) ? {
+                width: "100% !important"
+            } : {};
+            return (0,
+            r.jsxs)(a.Z, {
+                sx: {
+                    alignItems: "center",
+                    flex: 1
+                },
+                children: [!$.includes(h.rY.BUY) && (0,
+                r.jsx)(a.Z, {
+                    onClick: O,
+                    "data-type": "buy",
+                    sx: "sell" !== (null === _ || void 0 === _ ? void 0 : _.toLowerCase()) ? (0,
+                    i.Z)({}, b, R) : (0,
+                    o.Z)((0,
+                    i.Z)({}, m, R), {
+                        borderBottomColor: j ? "#fafafa" : "bg3"
+                    }),
+                    children: n("ocbs-bs-buy")
+                }), !$.includes(h.rY.SELL) && (0,
+                r.jsx)(a.Z, {
+                    onClick: O,
+                    "data-type": "sell",
+                    sx: "sell" === (null === _ || void 0 === _ ? void 0 : _.toLowerCase()) ? (0,
+                    i.Z)({}, b, R) : (0,
+                    o.Z)((0,
+                    i.Z)({}, m, R), {
+                        borderBottomColor: j ? "#fafafa" : "bg3"
+                    }),
+                    children: n("ocbs-bs-sell")
+                })]
+            })
+        }
+    }
+
+convert to es6
+
+ChatGPT
+
+2 / 2
+
+Dưới đây là mã đã được chuyển đổi sang ES6:
+
+javascript
+Copy code
+const BELX = (e, t, n) => {
+    "use strict";
+    n.d(t, {
+        Z: () => y
+    });
+
+    const i = n("BK7R"),
+        o = n("QUKP"),
+        r = n("jg1C"),
+        s = n("DTvD"),
+        a = n("C6y2"),
+        l = n("S9o+"),
+        c = n("Jd/b"),
+        u = n("qK/R"),
+        d = n("vWiH"),
+        h = n("wRFv"),
+        p = n("sHGS"),
+        f = n("BCcu"),
+        x = n("nn0X"),
+        v = n("6+bd"),
+        g = n("c+4a");
+
+    const m = {
+        width: "50%",
+        alignItems: "center",
+        color: "t.third",
+        fontWeight: 500,
+        fontSize: ["20px"],
+        borderBottom: "4px solid #FAFAFA",
+        justifyContent: "center",
+        cursor: "pointer",
+        height: "52px"
+    };
+
+    const b = o.Z(i.Z({}, m), {
+        borderBottom: "4px solid #F0B90B",
+        color: "t.primary"
+    });
+
+    const y = () => {
+        const {
+            t
+        } = l.$();
+
+        const y = v.B4();
+        const {
+            type: _,
+            paymentmethod: w,
+            channel: C
+        } = y;
+
+        const Z = u.Z();
+        const {
+            isLight: j
+        } = x.Fg();
+        const {
+            complianceKeys: $
+        } = g.Z();
+        const k = f.Z();
+        const {
+            selectFiat: M,
+            selectCrypto: D,
+            fiatList: F,
+            cryptoList: z
+        } = k;
+        const B = (D && D.assetCode) || (z[0] && z[0].assetCode) || "BTC";
+        const L = (M && M.assetCode) || (F[0] && F[0].assetCode) || "EUR";
+
+        const I = s.useCallback(() => {
+            return C.toChannelPage({
+                crypto: B,
+                fiat: L,
+                channel: C,
+                paymentmethod: w,
+                type: h.xy.SELL
+            });
+        }, [C, B, L, w, C]);
+
+        const H = s.useCallback(() => {
+            C.toChannelPage({
+                crypto: B,
+                fiat: L,
+                channel: C,
+                paymentmethod: w,
+                type: h.xy.BUY
+            });
+        }, [C, B, L, w, C]);
+
+        const O = s.useCallback(e => {
+            let r = "";
+            const s = p.K(_, "sell");
+            const a = s ? "binance_fiat_sell_crypto_page" : "binance_fiat_buy_crypto_page";
+
+            if (!w) {
+                r = s ? "binance_click_fiat_multiple_sell_enter_amount_page_switch_to_buy" : "binance_click_fiat_multiple_buy_enter_amount_page_switch_to_sell";
+            }
+
+            if (w === h.pD.Card) {
+                r = s ? "binance_click_fiat_multiple_sell_enter_amount_page_switch_to_buy" : "binance_click_fiat_buy_with_card_enter_amount_page_switch_to_sell";
+            }
+
+            if (w === h.pD.Wallet) {
+                r = s ? "binance_click_fiat_multiple_sell_enter_amount_page_switch_to_buy" : "binance_click_fiat_buy_with_wallet_enter_amount_page_switch_to_sell";
+            }
+
+            d.e1(d.Ql.webClick, {
+                pageName: a,
+                elementID: r,
+                extraInfo: {
+                    language: Z
+                }
+            });
+
+            if ("buy" === e.target.dataset.type) {
+                H();
+            }
+
+            if ("sell" === e.target.dataset.type) {
+                I();
+            }
+        }, [_, Z, H, I, w]);
+
+        const R = $.includes(h.rY.BUY) || $.includes(h.rY.SELL) ? {
+            width: "100% !important"
+        } : {};
+
+        return r.jsxs(a.Z, {
+            sx: {
+                alignItems: "center",
+                flex: 1
+            },
+            children: [!$.includes(h.rY.BUY) && r.jsx(a.Z, {
+                onClick: O,
+                "data-type": "buy",
+                sx: "sell" !== (_.toLowerCase()) ? i.Z({}, b, R) : o.Z(i.Z({}, m, R), {
+                    borderBottomColor: j ? "#fafafa" : "bg3"
+                }),
+                children: t("ocbs-bs-buy")
+            }), !$.includes(h.rY.SELL) && r.jsx(a.Z, {
+                onClick: O,
+                "data-type": "sell",
+                sx: "sell" === (_.toLowerCase()) ? i.Z({}, b, R) : o.Z(i.Z({}, m, R), {
+                    borderBottomColor: j ? "#fafafa" : "bg3"
+                }),
+                children: t("ocbs-bs-sell")
+            })]
+        });
+    }
+}
+

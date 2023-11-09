@@ -1,0 +1,138 @@
+qK3R: function(t, e) {
+        "use strict";
+        var n, r = this && this.__awaiter || function(t, e, n, r) {
+            return new (n || (n = Promise))((function(o, s) {
+                function i(t) {
+                    try {
+                        c(r.next(t))
+                    } catch (e) {
+                        s(e)
+                    }
+                }
+                function a(t) {
+                    try {
+                        c(r.throw(t))
+                    } catch (e) {
+                        s(e)
+                    }
+                }
+                function c(t) {
+                    var e;
+                    t.done ? o(t.value) : (e = t.value,
+                    e instanceof n ? e : new n((function(t) {
+                        t(e)
+                    }
+                    ))).then(i, a)
+                }
+                c((r = r.apply(t, e || [])).next())
+            }
+            ))
+        }
+        ;
+        Object.defineProperty(e, "__esModule", {
+            value: !0
+        }),
+        e.trace = e.Span = e.setReporter = e.SpanStatus = void 0,
+        function(t) {
+            t[t.Started = 0] = "Started",
+            t[t.Stopped = 1] = "Stopped"
+        }(n = e.SpanStatus || (e.SpanStatus = {}));
+        const o = "undefined" === typeof window
+          , s = Symbol.for("shuvi_server_reporter");
+        let i = 0;
+        let a;
+        e.setReporter = function(t) {
+            if (o) {
+                if (globalThis[s])
+                    throw new Error("Reporter already set !");
+                globalThis[s] = t
+            } else {
+                if (a)
+                    throw new Error("Reporter already set !");
+                a = t
+            }
+        }
+        ;
+        class c {
+            constructor({name: t, parentId: e, attrs: r, startTime: o}) {
+                this._name = t,
+                this._parentId = e,
+                this._attrs = r ? Object.assign({}, r) : {},
+                this._status = n.Started,
+                this._id = (i++,
+                i);
+                const s = Date.now();
+                this._start = o || s,
+                this._now = s
+            }
+            get status() {
+                return this._status
+            }
+            stop(t) {
+                const e = o ? globalThis[s] : a;
+                if (!e)
+                    return;
+                const r = t || Date.now()
+                  , i = r - this._start;
+                this._status = n.Stopped,
+                i > Number.MAX_SAFE_INTEGER && console.warn(`Duration is too long to express as float64: ${i}`),
+                e({
+                    timestamp: this._now,
+                    name: this._name,
+                    duration: i,
+                    startTime: this._start,
+                    endTime: r,
+                    id: this._id,
+                    parentId: this._parentId,
+                    attrs: this._attrs
+                })
+            }
+            traceChild(t, e) {
+                return new c({
+                    name: t,
+                    parentId: this._id,
+                    attrs: e
+                })
+            }
+            manualTraceChild(t, e, n, r) {
+                new c({
+                    name: t,
+                    parentId: this._id,
+                    attrs: r,
+                    startTime: e
+                }).stop(n)
+            }
+            setAttribute(t, e) {
+                this._attrs[t] = String(e)
+            }
+            setAttributes(t) {
+                Object.keys(t).forEach((e=>{
+                    this.setAttribute(e, t[e])
+                }
+                ))
+            }
+            traceFn(t) {
+                try {
+                    return t(this)
+                } finally {
+                    this.stop()
+                }
+            }
+            traceAsyncFn(t) {
+                return r(this, void 0, void 0, (function*() {
+                    try {
+                        return yield t(this)
+                    } finally {
+                        this.stop()
+                    }
+                }
+                ))
+            }
+        }
+        e.Span = c;
+        e.trace = (t,e,n)=>new c({
+            name: t,
+            parentId: e,
+            attrs: n
+        })
+    },
