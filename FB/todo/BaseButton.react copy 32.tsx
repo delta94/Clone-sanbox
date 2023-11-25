@@ -1,10 +1,26 @@
-// __d("ErrorGuard", ["fb-error"], (function(a, b, c, d, e, f, g) {
-//     "use strict";
-//     g["default"] = c("fb-error").ErrorGuard
-// }
-// ), 98);
+__d("useSearchCometGlobalTypeaheadCompositeDataSource", ["useSearchCometTypeaheadCompositeDataSource"], (function (a, b, c, d, e, f, g) {
+    "use strict";
+    var h = {
+        instance: null
+    };
 
-// Assuming "fb-error" exports a named export called ErrorGuard
-import { ErrorGuard } from 'fb-error';
+    function a(a) {
+        a = c("useSearchCometTypeaheadCompositeDataSource")(a);
+        h.instance == null && (h.instance = a);
+        return h.instance
+    }
+    g["default"] = a
+}), 98);
 
-export default ErrorGuard;
+
+import useSearchCometTypeaheadCompositeDataSource from './useSearchCometTypeaheadCompositeDataSource';
+
+let instance: ReturnType<typeof useSearchCometTypeaheadCompositeDataSource> | null = null;
+
+export default function useSearchCometGlobalTypeaheadCompositeDataSource(params: Parameters<typeof useSearchCometTypeaheadCompositeDataSource>[0]) {
+  if (instance === null) {
+    instance = useSearchCometTypeaheadCompositeDataSource(params); 
+  }
+
+  return instance;
+}

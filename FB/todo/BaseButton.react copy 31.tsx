@@ -1,10 +1,30 @@
-// __d("ErrorGuard", ["fb-error"], (function(a, b, c, d, e, f, g) {
-//     "use strict";
-//     g["default"] = c("fb-error").ErrorGuard
-// }
-// ), 98);
+__d("useSearchCometGlobalTypeaheadNullStateDataSource", ["qex", "useSearchCometRecentSearchDataSource"], (function (a, b, c, d, e, f, g) {
+    "use strict";
 
-// Assuming "fb-error" exports a named export called ErrorGuard
-import { ErrorGuard } from 'fb-error';
+    function a() {
+        return c("useSearchCometRecentSearchDataSource")({
+            fetchAvailability: Boolean(c("qex")._("218")),
+            fetchSearchBadge: Boolean(!0),
+            filter: "all",
+            nullStateSurface: "GLOBAL"
+        })
+    }
+    g["default"] = a
+}), 98);
 
-export default ErrorGuard;
+
+import { qex } from './qex'; 
+import { useSearchCometRecentSearchDataSource } from './useSearchCometRecentSearchDataSource';
+
+const useSearchCometGlobalTypeaheadNullStateDataSource = () => {
+
+  return useSearchCometRecentSearchDataSource({
+    fetchAvailability: Boolean(qex._('218')),
+    fetchSearchBadge: Boolean(true), 
+    filter: 'all',
+    nullStateSurface: 'GLOBAL'
+  });
+
+};
+
+export default useSearchCometGlobalTypeaheadNullStateDataSource;
