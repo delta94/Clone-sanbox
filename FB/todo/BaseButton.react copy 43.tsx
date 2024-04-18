@@ -27,12 +27,12 @@ __d("BaseToasterStateManager", ["CometMaxEnqueuedToastsSitevarConfig", "JSSchedu
 
 import { SchedulerCallback } from 'scheduler';
 
-import CometMaxEnqueuedToastsSitevarConfig from './CometMaxEnqueuedToastsSitevarConfig';
-import { JSScheduler } from './JSScheduler';
+import CometMaxEnqueuedToastsSitevarConfig from 'CometMaxEnqueuedToastsSitevarConfig';
+import { JSScheduler } from 'JSScheduler';
 import { 
   ToasterStateManager,
   XPlatReactToasterStateManager 
-} from './XPlatReactToasterStateManager';
+} from 'XPlatReactToasterStateManager';
 
 let instance: ToasterStateManager;
 

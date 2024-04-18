@@ -1,0 +1,16 @@
+export const CurrentUserInitialData = {
+    "ACCOUNT_ID": "100000212262904",
+    "USER_ID": "100000212262904",
+    "NAME": "Nguyễn Hữu Trương",
+    "SHORT_NAME": "Trương",
+    "IS_BUSINESS_PERSON_ACCOUNT": false,
+    "HAS_SECONDARY_BUSINESS_PERSON": false,
+    "IS_FACEBOOK_WORK_ACCOUNT": false,
+    "IS_MESSENGER_ONLY_USER": false,
+    "IS_DEACTIVATED_ALLOWED_ON_MESSENGER": false,
+    "IS_MESSENGER_CALL_GUEST_USER": false,
+    "IS_WORK_MESSENGER_CALL_GUEST_USER": false,
+    "IS_WORKROOMS_USER": false,
+    "APP_ID": "2220391788200892",
+    "IS_BUSINESS_DOMAIN": false
+}

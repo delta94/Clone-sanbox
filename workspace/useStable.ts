@@ -18,17 +18,20 @@
 
 import { useRef } from 'react';
 
-function useStable(fn) {
-    const ref = useRef(null);
+function useStable<T>(fn: () => T): T {
+    const ref = useRef<{
+      value: T 
+    } | null>(null);
     let current = ref.current;
-
+  
     if (current === null) {
-        current = { value: fn() };
-        ref.current = current;
-        return current.value;
+      current = {value: fn()};
+      ref.current = current;
+      return current.value;
     } else {
-    return current.value;
+      return current.value; 
     }
-}
+  }
+  
 
 export default useStable;

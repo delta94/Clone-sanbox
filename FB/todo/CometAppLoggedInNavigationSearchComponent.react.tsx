@@ -110,7 +110,7 @@ import stylex from 'stylex';
 import requireDeferred from 'requireDeferred'
 
 const SearchCometGlobalTypeaheadDataSourceLoader = deferredLoadComponent(
-  requireDeferred('SearchCometGlobalTypeaheadDataSourceLoader.react').setRef('CometAppLoggedInNavigationSearchComponent.react')
+  requireDeferred('SearchCometGlobalTypeaheadDataSourceLoader.react')
 );
 
 interface Props {

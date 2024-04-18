@@ -1,10 +1,13 @@
-// __d("ErrorGuard", ["fb-error"], (function(a, b, c, d, e, f, g) {
-//     "use strict";
-//     g["default"] = c("fb-error").ErrorGuard
-// }
-// ), 98);
+__d("useKeyCommands", ["CometKeyCommandWidget"], (function(a, b, c, d, e, f, g) {
+    "use strict";
+    g["default"] = c("CometKeyCommandWidget").useKeyCommands
+}
+), 98);
 
-// Assuming "fb-error" exports a named export called ErrorGuard
-import { ErrorGuard } from 'fb-error';
+import { useKeyCommands } from 'CometKeyCommandWidget'; // Replace with actual import path
 
-export default ErrorGuard;
+const useKeyCommands = () => {
+  return useKeyCommands();
+};
+
+export default useKeyCommands;
