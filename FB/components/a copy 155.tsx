@@ -1,1 +1,1 @@
-CometHomeCreateOrMegaMenuJewel
+MWV2MessageActionsVisibility;

@@ -1,1 +1,1 @@
-CometAppLoggedInNavigationSearchSection
+MWMessageRowFooter;

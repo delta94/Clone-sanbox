@@ -1,1 +1,1 @@
-CometHomeCreateOrMegaMenuJewel
+MWPJumpToMostRecentMessageButtonAnimationWrapper

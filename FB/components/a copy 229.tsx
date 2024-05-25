@@ -35,3 +35,45 @@ __d("SortedAsyncIterable", ["PromiseAnnotate", "PromiseOrValue", "ReQLGlobalQuer
     g.getOrCreateContext = l;
     g.toArray = a
 }), 98);
+
+
+import { PromiseAnnotate, PromiseOrValue } from './your_module_path';
+import { ReQLGlobalQueryContext } from './your_module_path';
+import { isPromise } from './your_module_path';
+
+function getOrCreateContext<T>(a: T): WeakMap<any, any> {
+    if (ReQLGlobalQueryContext.globalQueryContext.contents == null) {
+        const context = new WeakMap();
+        ReQLGlobalQueryContext.globalQueryContext.contents = context;
+        return context;
+    }
+    const context = ReQLGlobalQueryContext.globalQueryContext.contents;
+    const dependencies = ReQLGlobalQueryContext.getDependencies(context);
+    if (dependencies != null) {
+        dependencies.push(a);
+    }
+    return context;
+}
+
+function toArray<T>(a: { iterator: Function, uniqueId?: string }): Promise<T[]> | T[] {
+    const result: T[] = [];
+    const iterator = a.iterator(getOrCreateContext(a));
+    const loop = () => {
+        return PromiseOrValue.loop(() => {
+            return PromiseOrValue.map(iterator.next(), (value: any) => {
+                if (value.done) {
+                    return { action: "break", value: result };
+                }
+                result.push(value.value);
+                return { action: "continue", value: undefined };
+            });
+        });
+    };
+    const f = loop();
+    if (isPromise(f)) {
+        PromiseAnnotate.setDisplayName(f, `ReQL${a.uniqueId != null ? "_" + a.uniqueId : ""}`);
+    }
+    return f;
+}
+
+export { getOrCreateContext, toArray };

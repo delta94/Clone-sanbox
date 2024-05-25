@@ -1,1 +1,1 @@
-CometHomeCreateOrMegaMenuJewel
+MWV2ChatAdminMessage;

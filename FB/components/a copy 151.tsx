@@ -1,1 +1,1 @@
-CometHomeCreateOrMegaMenuJewel
+useIsReactionsV2Enabled;
