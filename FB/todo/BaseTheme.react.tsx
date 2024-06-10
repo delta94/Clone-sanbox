@@ -1,63 +1,78 @@
-__d("BaseTheme.react", ["BaseThemeProvider.react", "BaseView.react", "react"], (function (a, b, c, d, e, f, g) {
+__d(
+  "BaseTheme.react",
+  ["BaseThemeProvider.react", "BaseView.react", "react"],
+  function (a, b, c, d, e, f, g) {
     "use strict";
-    var h, i = h || d("react");
+    var h,
+      i = h || d("react");
 
     function a(a, b) {
-        var d = a.config,
-            e = a.displayMode,
-            f = a.style,
-            g = a.xstyle,
-            h = babelHelpers.objectWithoutPropertiesLoose(a, ["config", "displayMode", "style", "xstyle"]);
-        return i.jsx(c("BaseThemeProvider.react"), {
-            config: d,
-            displayMode: e,
-            children: function (a, d) {
-                return i.jsx(c("BaseView.react"), babelHelpers["extends"]({}, h, {
-                    ref: b,
-                    style: babelHelpers["extends"]({}, d, f),
-                    xstyle: [a, g]
-                }))
-            }
-        })
+      var d = a.config,
+        e = a.displayMode,
+        f = a.style,
+        g = a.xstyle,
+        h = babelHelpers.objectWithoutPropertiesLoose(a, [
+          "config",
+          "displayMode",
+          "style",
+          "xstyle",
+        ]);
+      return i.jsx(c("BaseThemeProvider.react"), {
+        config: d,
+        displayMode: e,
+        children: function (a, d) {
+          return i.jsx(
+            c("BaseView.react"),
+            babelHelpers["extends"]({}, h, {
+              ref: b,
+              style: babelHelpers["extends"]({}, d, f),
+              xstyle: [a, g],
+            })
+          );
+        },
+      });
     }
     a.displayName = a.name + " [from " + f.id + "]";
     b = i.forwardRef(a);
-    g["default"] = b
-}), 98);
+    g["default"] = b;
+  },
+  98
+);
 
+import { BaseThemeProvider } from "BaseThemeProvider.react";
+import { BaseView } from "BaseView.react";
+import React, { forwardRef } from "react";
 
-import React, { forwardRef } from 'react';
-import { BaseThemeProvider, BaseThemeProviderProps } from 'BaseThemeProvider.react'; 
-import { BaseView, BaseViewProps } from 'BaseView.react';
+type ThemeConfig = {
+  [key: string]: string;
+};
 
-interface BaseThemeProps extends Omit<BaseViewProps, 'style' | 'xstyle'> {
-  config?: BaseThemeProviderProps['config'];
-  displayMode?: BaseThemeProviderProps['displayMode']; 
+type Props = {
+  config: ThemeConfig;
+  displayMode?: string;
   style?: React.CSSProperties;
-  xstyle?: React.CSSProperties; 
-}
-
-const BaseTheme = forwardRef<HTMLDivElement, BaseThemeProps>((props, ref) => {
-  const {
-    config, 
-    displayMode,
-    style,
-    xstyle,
-    ...viewProps    
-  } = props;
+  xstyle?: React.CSSProperties;
+};
+const BaseTheme: React.ForwardRefRenderFunction<HTMLDivElement, Props> = (
+  props,
+  ref
+) => {
+  const { config, displayMode, style, xstyle, ...rest } = props;
 
   return (
     <BaseThemeProvider config={config} displayMode={displayMode}>
-      {theme => (
+      {(themeStyles, displayMode) => (
         <BaseView
-          {...viewProps}
+          {...rest}
           ref={ref}
-          style={{...theme, ...style}}
-          xstyle={[theme, xstyle]} 
+          style={{ ...themeStyles, ...style }}
+          xstyle={[themeStyles, xstyle]}
         />
       )}
     </BaseThemeProvider>
   );
-});
+};
 
-export default BaseTheme;
+BaseTheme.displayName = `${BaseTheme.name} [from 98]`;
+
+export default forwardRef(BaseTheme);

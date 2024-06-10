@@ -1,0 +1,1 @@
+TriangleDownFilled20IconSvg;

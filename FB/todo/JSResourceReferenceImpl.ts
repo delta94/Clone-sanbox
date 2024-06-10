@@ -117,109 +117,94 @@ __d("JSResourceReferenceImpl", ["JSResourceEvents", "Promise", "PromiseAnnotate"
 ), 98);
 
 
+import { notify } from 'JSResourceEvents';
+import { setDisplayName } from 'PromiseAnnotate';
+import { ifRequireable, ifRequired } from 'ifRequireable';
+import Promise from 'Promise';
 
-import { JSResourceEvents } from 'your-module-path'; // Replace 'your-module-path' with the actual import path for JSResourceEvents
-import { Promise, PromiseAnnotate, ifRequireable, ifRequired } from 'your-module-path'; // Replace 'your-module-path' with the actual import path for Promise, PromiseAnnotate, ifRequireable, and ifRequired
+let bootLoader = null;
+const pendingCallbacks: ((loader: any) => void)[] = [];
 
-let globalBootloader = null;
-const callbacks = [];
-
-function waitForBootloader(callback) {
-  if (globalBootloader) {
-    callback(globalBootloader);
-  } else {
-    callbacks.push(callback);
-  }
+function runPendingCallbacks(loader: any): void {
+    if (bootLoader) {
+        loader(bootLoader);
+        pendingCallbacks.length = 0;
+    } else {
+        pendingCallbacks.push(loader);
+    }
 }
 
-const unknownCallerMessage = 'JSResource: unknown caller';
+const unknownCallerMessage = "JSResource: unknown caller";
 
 class JSResourceReferenceImpl {
-  static $3 = true;
+    static disableForSSR_DO_NOT_USE: boolean = true;
 
-  constructor(moduleId) {
-    this.$1 = moduleId;
-    this.$2 = null;
-  }
+    constructor(private moduleId: string, private ref?: string) {}
 
-  getModuleId() {
-    return this.$1;
-  }
-
-  getModuleIdAsRef() {
-    return this.$1;
-  }
-
-  load() {
-    const moduleId = this.getModuleIdAsRef();
-    JSResourceEvents.notify(this.$1, this.$2, 'LOADED');
-    const promise = new Promise((resolve) => {
-      waitForBootloader((bootloader) => {
-        bootloader.loadModules([moduleId], (loadedModule) => {
-          JSResourceEvents.notify(this.$1, this.$2, 'PROMISE_RESOLVED');
-          resolve(loadedModule);
-        }, this.$2 || unknownCallerMessage);
-      });
-    });
-
-    PromiseAnnotate.setDisplayName(promise, `Bootload(${this.getModuleId()})`);
-    return promise;
-  }
-
-  preload() {
-    const moduleId = this.getModuleIdAsRef();
-    const callerMessage = this.$2 || unknownCallerMessage;
-    waitForBootloader((bootloader) => {
-      bootloader.loadModules([moduleId], () => {}, `preload: ${callerMessage}`);
-    });
-  }
-
-  equals(otherResource) {
-    return this === otherResource || this.$1 === otherResource.$1;
-  }
-
-  getModuleIfRequireable() {
-    JSResourceEvents.notify(this.$1, this.$2, 'ACCESSED');
-    return ifRequireable(this.$1, (module) => module);
-  }
-
-  getModuleIfRequired() {
-    JSResourceEvents.notify(this.$1, this.$2, 'ACCESSED');
-    return ifRequired(this.$1, (module) => module);
-  }
-
-  static disableForSSR_DO_NOT_USE() {
-    this.$3 = false;
-  }
-
-  isAvailableInSSR_DO_NOT_USE() {
-    return this.constructor.$3;
-  }
-
-  __setRef(ref) {
-    this.$2 = ref;
-    JSResourceEvents.notify(this.$1, this.$2, 'CREATED');
-    return this;
-  }
-
-  static loadAll(resources, callback) {
-    const resourceMap = {};
-    let hasRef = false;
-
-    for (const resource of resources) {
-      const ref = resource.$2;
-      if (ref) {
-        hasRef = true;
-        resourceMap[ref] = true;
-      }
-
-      JSResourceEvents.notify(resource.$1, ref, 'LOADED');
+    getModuleId(): string {
+        return this.moduleId;
     }
 
-    waitForBootloader((bootloader) => {
-      bootloader.loadModules(resources.map((resource) => resource.getModuleId()), callback, hasRef ? Object.keys(resourceMap).join(':') : unknownCallerMessage);
-    });
-  }
+    getModuleIdAsRef(): string {
+        return this.ref || this.moduleId;
+    }
+
+    load(): Promise<any> {
+        const moduleId = this.getModuleIdAsRef();
+        notify(this.moduleId, this.ref, "LOADED");
+
+        const promise = new Promise<any>((resolve) => {
+            runPendingCallbacks(loader => {
+                loader.loadModules([moduleId], (modules) => {
+                    notify(this.moduleId, this.ref, "PROMISE_RESOLVED");
+                    resolve(modules);
+                }, this.ref || unknownCallerMessage);
+            });
+        });
+
+        setDisplayName(promise, `Bootload(${moduleId})`);
+        return promise;
+    }
+
+    preload(): void {
+        const moduleId = this.getModuleIdAsRef();
+        const callerMessage = this.ref || unknownCallerMessage;
+        runPendingCallbacks(loader => {
+            loader.loadModules([moduleId], () => {}, `preload: ${callerMessage}`);
+        });
+    }
+
+    equals(other: JSResourceReferenceImpl): boolean {
+        return this === other || this.moduleId === other.moduleId;
+    }
+
+    getModuleIfRequireable(): any {
+        notify(this.moduleId, this.ref, "ACCESSED");
+        return ifRequireable(this.moduleId, moduleId => moduleId);
+    }
+
+    getModuleIfRequired(): any {
+        notify(this.moduleId, this.ref, "ACCESSED");
+        return ifRequired(this.moduleId, moduleId => moduleId);
+    }
+
+    static loadAll(resources: JSResourceReferenceImpl[], callback: () => void): void {
+        const modules: { [key: string]: boolean } = {};
+        let hasRef = false;
+
+        resources.forEach(resource => {
+            const ref = resource.ref;
+            if (ref) {
+                hasRef = true;
+                modules[ref] = true;
+            }
+            notify(resource.moduleId, ref, "LOADED");
+        });
+
+        runPendingCallbacks(loader => {
+            loader.loadModules(resources.map(resource => resource.getModuleId()), callback, hasRef ? Object.keys(modules).join(":") : unknownCallerMessage);
+        });
+    }
 }
 
 export default JSResourceReferenceImpl;

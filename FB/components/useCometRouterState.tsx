@@ -1,21 +1,23 @@
-__d("useCometRouterState", ["CometRouterStateContext", "react"], (function (a, b, c, d, e, f, g) {
+__d(
+  "useCometRouterState",
+  ["CometRouterStateContext", "react"],
+  function (a, b, c, d, e, f, g) {
     "use strict";
-    var h, i = (h || d("react")).useContext;
+    var h,
+      i = (h || d("react")).useContext;
 
     function a() {
-        return i(c("CometRouterStateContext"))
+      return i(c("CometRouterStateContext"));
     }
-    g["default"] = a
-}), 98);
+    g["default"] = a;
+  },
+  98
+);
 
+import { useContext } from "react";
+import { CometRouterStateContext } from "path-to-your-dependencies"; // Update path accordingly
 
-import { useContext } from 'react';
-import { CometRouterStateContext } from 'path-to-your-dependencies'; // Update path accordingly
-
-interface RouterState {
-  // Define the type of your router state if needed
-  // Example: someProperty: string;
-}
+interface RouterState {}
 
 function useCometRouterState(): RouterState {
   return useContext(CometRouterStateContext);

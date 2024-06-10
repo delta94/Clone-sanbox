@@ -20,27 +20,27 @@ __d("JSResource", ["JSResourceReferenceImpl"], (function(a, b, c, d, e, f, g) {
 }
 ), 98);
 
+import JSResourceReferenceImpl from 'JSResourceReferenceImpl';
 
-import JSResourceReferenceImpl from 'JSResourceReferenceImpl'; // Import JSResourceReferenceImpl from your actual module path
+const resources: { [key: string]: any } = {};
 
-const resourceMap = {};
-
-function registerResource(name, resource) {
-  resourceMap[name] = resource;
+function registerResource(name: string, resource: any): void {
+    resources[name] = resource;
 }
 
-function getResource(name) {
-  const existingResource = resourceMap[name];
-  if (existingResource) {
-    return existingResource;
-  }
-
-  const newResource = new JSResourceReferenceImpl(name);
-  registerResource(name, newResource);
-  return newResource;
+function getResource(name: string): any {
+    return resources[name];
 }
 
-const JSResource = getResource;
+function JSResource(name: string) {
+    let resource = getResource(name);
+    if (resource) {
+        return resource;
+    }
+    resource = new JSResourceReferenceImpl(name);
+    registerResource(name, resource);
+    return resource;
+}
 
 JSResource.loadAll = JSResourceReferenceImpl.loadAll;
 

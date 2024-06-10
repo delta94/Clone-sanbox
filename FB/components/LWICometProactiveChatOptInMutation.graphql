@@ -1,0 +1,153 @@
+mutation LWICometProactiveChatOptInMutation($input: XFBProactiveOptInInput) {
+  xfb_ProactiveChatUpdateIsOptedIn(input: $input) {
+    viewer {
+      proactive_chat_opt_in_settings(topic: "ADVERTISER_GUIDANCE") {
+        is_opted_in
+        id
+      }
+      proactive_chat_opt_in_settings_v2(topic: "ADVERTISER_GUIDANCE") {
+        is_opted_in
+        id
+      }
+    }
+  }
+}
+
+# __d("LWICometProactiveChatOptInMutation_facebookRelayOperation", [], (function(a, b, c, d, e, f) {
+#     e.exports = "7358944124142177"
+# }
+# ), null);
+# __d("LWICometProactiveChatOptInMutation.graphql", ["LWICometProactiveChatOptInMutation_facebookRelayOperation"], (function(a, b, c, d, e, f) {
+#     "use strict";
+#     a = function() {
+#         var a = [{
+#             defaultValue: null,
+#             kind: "LocalArgument",
+#             name: "input"
+#         }]
+#           , c = [{
+#             kind: "Variable",
+#             name: "input",
+#             variableName: "input"
+#         }]
+#           , d = [{
+#             kind: "Literal",
+#             name: "topic",
+#             value: "ADVERTISER_GUIDANCE"
+#         }]
+#           , e = {
+#             alias: null,
+#             args: null,
+#             kind: "ScalarField",
+#             name: "is_opted_in",
+#             storageKey: null
+#         }
+#           , f = [e];
+#         e = [e, {
+#             alias: null,
+#             args: null,
+#             kind: "ScalarField",
+#             name: "id",
+#             storageKey: null
+#         }];
+#         return {
+#             fragment: {
+#                 argumentDefinitions: a,
+#                 kind: "Fragment",
+#                 metadata: null,
+#                 name: "LWICometProactiveChatOptInMutation",
+#                 selections: [{
+#                     alias: null,
+#                     args: c,
+#                     concreteType: "XFBProactiveOptInOutput",
+#                     kind: "LinkedField",
+#                     name: "xfb_ProactiveChatUpdateIsOptedIn",
+#                     plural: !1,
+#                     selections: [{
+#                         alias: null,
+#                         args: null,
+#                         concreteType: "Viewer",
+#                         kind: "LinkedField",
+#                         name: "viewer",
+#                         plural: !1,
+#                         selections: [{
+#                             alias: null,
+#                             args: d,
+#                             concreteType: "XFBProactiveChatOptInSettings",
+#                             kind: "LinkedField",
+#                             name: "proactive_chat_opt_in_settings",
+#                             plural: !1,
+#                             selections: f,
+#                             storageKey: 'proactive_chat_opt_in_settings(topic:"ADVERTISER_GUIDANCE")'
+#                         }, {
+#                             alias: null,
+#                             args: d,
+#                             concreteType: "XFBProactiveChatOptInSettingsV2",
+#                             kind: "LinkedField",
+#                             name: "proactive_chat_opt_in_settings_v2",
+#                             plural: !1,
+#                             selections: f,
+#                             storageKey: 'proactive_chat_opt_in_settings_v2(topic:"ADVERTISER_GUIDANCE")'
+#                         }],
+#                         storageKey: null
+#                     }],
+#                     storageKey: null
+#                 }],
+#                 type: "Mutation",
+#                 abstractKey: null
+#             },
+#             kind: "Request",
+#             operation: {
+#                 argumentDefinitions: a,
+#                 kind: "Operation",
+#                 name: "LWICometProactiveChatOptInMutation",
+#                 selections: [{
+#                     alias: null,
+#                     args: c,
+#                     concreteType: "XFBProactiveOptInOutput",
+#                     kind: "LinkedField",
+#                     name: "xfb_ProactiveChatUpdateIsOptedIn",
+#                     plural: !1,
+#                     selections: [{
+#                         alias: null,
+#                         args: null,
+#                         concreteType: "Viewer",
+#                         kind: "LinkedField",
+#                         name: "viewer",
+#                         plural: !1,
+#                         selections: [{
+#                             alias: null,
+#                             args: d,
+#                             concreteType: "XFBProactiveChatOptInSettings",
+#                             kind: "LinkedField",
+#                             name: "proactive_chat_opt_in_settings",
+#                             plural: !1,
+#                             selections: e,
+#                             storageKey: 'proactive_chat_opt_in_settings(topic:"ADVERTISER_GUIDANCE")'
+#                         }, {
+#                             alias: null,
+#                             args: d,
+#                             concreteType: "XFBProactiveChatOptInSettingsV2",
+#                             kind: "LinkedField",
+#                             name: "proactive_chat_opt_in_settings_v2",
+#                             plural: !1,
+#                             selections: e,
+#                             storageKey: 'proactive_chat_opt_in_settings_v2(topic:"ADVERTISER_GUIDANCE")'
+#                         }],
+#                         storageKey: null
+#                     }],
+#                     storageKey: null
+#                 }]
+#             },
+#             params: {
+#                 id: b("LWICometProactiveChatOptInMutation_facebookRelayOperation"),
+#                 metadata: {},
+#                 name: "LWICometProactiveChatOptInMutation",
+#                 operationKind: "mutation",
+#                 text: null
+#             }
+#         }
+#     }();
+#     e.exports = a
+# }
+# ), null);

@@ -1,5 +1,5 @@
 const MWJewelEntrypoint = {
-    "entrypoint": "CLASSIC"
-}
+  entrypoint: "CLASSIC",
+};
 
-export default MWJewelEntrypoint
+export default MWJewelEntrypoint;

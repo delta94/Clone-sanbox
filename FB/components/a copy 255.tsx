@@ -1,6 +1,18 @@
-__d("MWV2CookieReader", ["I64", "LSIntEnum", "MWChatStateV2Types", "gkx", "killswitch", "recoverableViolation"], (function (a, b, c, d, e, f, g) {
+__d(
+  "MWV2CookieReader",
+  [
+    "I64",
+    "LSIntEnum",
+    "MWChatStateV2Types",
+    "gkx",
+    "killswitch",
+    "recoverableViolation",
+  ],
+  function (a, b, c, d, e, f, g) {
     "use strict";
-    var h, i, j = {
+    var h,
+      i,
+      j = {
         cbj: (h || (h = d("LSIntEnum"))).ofNumber(23),
         cbu: h.ofNumber(24),
         cg: h.ofNumber(18),
@@ -15,123 +27,137 @@ __d("MWV2CookieReader", ["I64", "LSIntEnum", "MWChatStateV2Types", "gkx", "kills
         dpu: h.ofNumber(151),
         g: h.ofNumber(2),
         sc: h.ofNumber(15),
-        sg: h.ofNumber(16)
-    };
+        sg: h.ofNumber(16),
+      };
 
     function k(a) {
-        a = a.split(".");
-        if (a.length !== 2) return;
-        var b = a[0];
-        a = a[1];
-        if (/^-?[1-9]\d*$/.test(a) === !1 || b == null) return;
-        b = (b = j[b]) != null ? b : (h || (h = d("LSIntEnum"))).ofNumber(1);
-        return [(i || (i = d("I64"))).of_string(a), b]
+      a = a.split(".");
+      if (a.length !== 2) return;
+      var b = a[0];
+      a = a[1];
+      if (/^-?[1-9]\d*$/.test(a) === !1 || b == null) return;
+      b = (b = j[b]) != null ? b : (h || (h = d("LSIntEnum"))).ofNumber(1);
+      return [(i || (i = d("I64"))).of_string(a), b];
     }
 
     function l(a) {
-        var b = a.map(function (a) {
+      var b = a.map(function (a) {
+        a = a[0];
+        return (i || (i = d("I64"))).to_string(a);
+      });
+      b = new Set(b);
+      if (b.size !== a.length) {
+        c("recoverableViolation")(
+          "Duplicate thread in cookie (t3)",
+          "messenger_comet"
+        );
+        return a.filter(function (a, b, c) {
+          var e = a[0];
+          return !c.slice((b + 1) | 0).some(function (a) {
             a = a[0];
-            return (i || (i = d("I64"))).to_string(a)
+            return (i || (i = d("I64"))).equal(a, e);
+          });
         });
-        b = new Set(b);
-        if (b.size !== a.length) {
-            c("recoverableViolation")("Duplicate thread in cookie (t3)", "messenger_comet");
-            return a.filter(function (a, b, c) {
-                var e = a[0];
-                return !c.slice(b + 1 | 0).some(function (a) {
-                    a = a[0];
-                    return (i || (i = d("I64"))).equal(a, e)
-                })
-            })
-        } else return a
+      } else return a;
     }
 
     function a(a) {
-        if (a == null) return d("MWChatStateV2Types").emptyMWChatState;
-        if (c("killswitch")("MESSENGER_WEB_STOP_PERSISTING_CHAT_HEADS") || !c("gkx")("24038") || !a.startsWith("C")) return d("MWChatStateV2Types").emptyMWChatState;
-        a = a.slice(1);
-        try {
-            a = JSON.parse(a)
-        } catch (b) {
-            c("recoverableViolation")("Error parsing JSON string", "messenger_comet"), a = null
+      if (a == null) return d("MWChatStateV2Types").emptyMWChatState;
+      if (
+        c("killswitch")("MESSENGER_WEB_STOP_PERSISTING_CHAT_HEADS") ||
+        !c("gkx")("24038") ||
+        !a.startsWith("C")
+      )
+        return d("MWChatStateV2Types").emptyMWChatState;
+      a = a.slice(1);
+      try {
+        a = JSON.parse(a);
+      } catch (b) {
+        c("recoverableViolation")(
+          "Error parsing JSON string",
+          "messenger_comet"
+        ),
+          (a = null);
+      }
+      if (a === null) return d("MWChatStateV2Types").emptyMWChatState;
+      var b = [],
+        e = new Set();
+      a.t3.forEach(function (a) {
+        var c = a.i;
+        c = k(c);
+        if (c != null) {
+          b.push(c);
+          a.o === 1 && e.add(c);
+          return;
         }
-        if (a === null) return d("MWChatStateV2Types").emptyMWChatState;
-        var b = [],
-            e = new Set();
-        a.t3.forEach(function (a) {
-            var c = a.i;
-            c = k(c);
-            if (c != null) {
-                b.push(c);
-                a.o === 1 && e.add(c);
-                return
-            }
+      });
+      var f = l(b),
+        g = new Map(),
+        h = {
+          contents: 0,
+        };
+      f.forEach(function (b) {
+        var a = b[0];
+        b = b[1];
+        var c = e.has([a, b]);
+        g.set(h.contents, {
+          clientForcedMinimizeWatermark: 0,
+          closeWatermark: 0,
+          minimizeWatermark: c ? 0 : 1,
+          openFlyoutWatermark: 0,
+          openWatermark: c ? 1 : 0,
+          tabId: h.contents,
+          tabType: {
+            threadKeyDescriptor: {
+              clientThreadKey: void 0,
+              threadKey: a,
+              threadType: b,
+            },
+            type: d("MWChatStateV2Types").MWChatStateTabType.ChatTab,
+          },
         });
-        var f = l(b),
-            g = new Map(),
-            h = {
-                contents: 0
-            };
-        f.forEach(function (b) {
-            var a = b[0];
-            b = b[1];
-            var c = e.has([a, b]);
-            g.set(h.contents, {
-                clientForcedMinimizeWatermark: 0,
-                closeWatermark: 0,
-                minimizeWatermark: c ? 0 : 1,
-                openFlyoutWatermark: 0,
-                openWatermark: c ? 1 : 0,
-                tabId: h.contents,
-                tabType: {
-                    threadKeyDescriptor: {
-                        clientThreadKey: void 0,
-                        threadKey: a,
-                        threadType: b
-                    },
-                    type: d("MWChatStateV2Types").MWChatStateTabType.ChatTab
-                }
-            });
-            h.contents = h.contents + 1 | 0
-        });
-        a = a.lm3;
+        h.contents = (h.contents + 1) | 0;
+      });
+      a = a.lm3;
+      if (a != null) {
+        a = k(a);
         if (a != null) {
-            a = k(a);
-            if (a != null) {
-                var j = a[0];
-                a = a[1];
-                f.some(function (a) {
-                    a = a[0];
-                    return (i || (i = d("I64"))).equal(a, j)
-                }) || g.set(h.contents, {
-                    clientForcedMinimizeWatermark: 0,
-                    closeWatermark: 0,
-                    minimizeWatermark: 0,
-                    openFlyoutWatermark: 0,
-                    openWatermark: 2,
-                    tabId: h.contents,
-                    tabType: {
-                        threadKeyDescriptor: {
-                            clientThreadKey: void 0,
-                            threadKey: j,
-                            threadType: a
-                        },
-                        type: d("MWChatStateV2Types").MWChatStateTabType.ChatTab
-                    }
-                });
-                h.contents = h.contents + 1 | 0
-            }
+          var j = a[0];
+          a = a[1];
+          f.some(function (a) {
+            a = a[0];
+            return (i || (i = d("I64"))).equal(a, j);
+          }) ||
+            g.set(h.contents, {
+              clientForcedMinimizeWatermark: 0,
+              closeWatermark: 0,
+              minimizeWatermark: 0,
+              openFlyoutWatermark: 0,
+              openWatermark: 2,
+              tabId: h.contents,
+              tabType: {
+                threadKeyDescriptor: {
+                  clientThreadKey: void 0,
+                  threadKey: j,
+                  threadType: a,
+                },
+                type: d("MWChatStateV2Types").MWChatStateTabType.ChatTab,
+              },
+            });
+          h.contents = (h.contents + 1) | 0;
         }
-        return {
-            focusedTabId: void 0,
-            mediaViewerOpenWatermark: -1,
-            nextTabId: h.contents,
-            tabs: g
-        }
+      }
+      return {
+        focusedTabId: void 0,
+        mediaViewerOpenWatermark: -1,
+        nextTabId: h.contents,
+        tabs: g,
+      };
     }
-    g.read = a
-}), 98);
-
+    g.read = a;
+  },
+  98
+);
 
 import I64 from "./I64";
 import LSIntEnum from "./LSIntEnum";
@@ -190,7 +216,11 @@ export default {
       return MWChatStateV2Types.emptyMWChatState;
     }
 
-    if (killswitch("MESSENGER_WEB_STOP_PERSISTING_CHAT_HEADS") || !gkx("24038") || !cookie.startsWith("C")) {
+    if (
+      killswitch("MESSENGER_WEB_STOP_PERSISTING_CHAT_HEADS") ||
+      !gkx("24038") ||
+      !cookie.startsWith("C")
+    ) {
       return MWChatStateV2Types.emptyMWChatState;
     }
 
@@ -280,4 +310,3 @@ export default {
     };
   },
 };
-

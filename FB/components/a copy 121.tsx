@@ -1,1 +1,1 @@
-SearchCometTypeaheadLoggingContextProvider
+SearchCometTypeaheadLoggingContextProvider;
